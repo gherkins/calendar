@@ -15,11 +15,12 @@ const dates = {}
 while (date.getFullYear() < year + 1) {
   const days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000))
   const weekNumber = Math.ceil(days / 7)
+
   const day = date.getDay() === 0 ? 7 : date.getDay()
 
   //init new week
   if (weekNumber !== lastWeekNumber) {
-    dates[weekNumber] = [weekNumber]
+    dates[weekNumber] = [weekNumber <= 52 ? weekNumber : 1]
   }
 
   //use month name instead of week number
@@ -28,8 +29,10 @@ while (date.getFullYear() < year + 1) {
   }
 
   //fill empty days
-  while (day !== dates[weekNumber].length) {
-    dates[weekNumber].push('')
+  if (Object.keys(dates).length === 1) {
+    while (day !== dates[weekNumber].length) {
+      dates[weekNumber].push('')
+    }
   }
 
   dates[weekNumber].push(date.getDate())
@@ -39,6 +42,9 @@ while (date.getFullYear() < year + 1) {
 const weeks = []
 for (let weekNumber in dates) {
   weeks.push(dates[weekNumber])
+}
+while (weeks[weeks.length - 1].length < 8) {
+  weeks[weeks.length - 1].push('')
 }
 
 doc.autoTable({
