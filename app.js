@@ -24,7 +24,7 @@ while (date.getFullYear() < year + 1) {
 
   //use month name instead of week number
   if (date.getDate() === 1) {
-    dates[weekNumber][0] = date.toLocaleString('en-US', { month: 'short' }).toUpperCase()
+    dates[weekNumber][0] = date.toLocaleString('de-DE', { month: 'short' }).toUpperCase()
   }
 
   //fill empty days
