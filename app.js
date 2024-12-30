@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import moment from 'moment'
 import tinycolor from 'tinycolor2'
 
-const year = parseInt(process.argv[2])
+const year = parseInt(process.argv[2] || moment().format('YYYY'))
 const firstDayOfYear = moment(`${year}-01-01`)
 const lastDayOfYear = firstDayOfYear.clone().endOf('year')
 
