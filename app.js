@@ -1,53 +1,44 @@
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import * as fs from 'fs'
+import moment from 'moment'
 
-const year = 2024
+const year = parseInt(process.argv[2])
+const firstDayOfYear = moment(`${year}-01-01`)
+const lastDayOfYear = firstDayOfYear.clone().endOf('year')
 
-const doc = new jsPDF()
-
-const date = new Date(`${year}-01-01`)
-const startDate = new Date(date.getFullYear(), 0, 1)
-
-let lastWeekNumber = null
-
-const dates = {}
-while (date.getFullYear() < year + 1) {
-  const days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000)) + 1
-  const weekNumber = Math.ceil(days / 7)
-  const day = date.getDay() === 0 ? 7 : date.getDay()
-
-  //init new week
-  if (weekNumber !== lastWeekNumber) {
-    dates[weekNumber] = [weekNumber <= 52 ? weekNumber : 1]
-  }
-
-  //use month name instead of week number
-  if (date.getDate() === 1) {
-    dates[weekNumber][0] = date.toLocaleString('de-DE', { month: 'short' }).toUpperCase()
-  }
-
-  //fill empty days
-  if (Object.keys(dates).length === 1) {
-    while (day !== dates[weekNumber].length) {
-      dates[weekNumber].push('')
-    }
-  }
-
-  dates[weekNumber].push(date.getDate())
-  date.setDate(date.getDate() + 1)
-  lastWeekNumber = weekNumber
-}
 const weeks = []
-for (let weekNumber in dates) {
-  weeks.push(dates[weekNumber])
-}
-while (weeks[weeks.length - 1].length < 8) {
-  weeks[weeks.length - 1].push('')
+const current = firstDayOfYear.clone().startOf('isoWeek')
+
+let lastMonthName = null
+
+while (current <= lastDayOfYear) {
+
+  let monthName = current.format('MMM').toUpperCase()
+  if (current.week() === 1) {
+    monthName = 'JAN'
+  }
+  if (current.week() >= 52) {
+    monthName = lastMonthName
+  }
+
+  let label = current.format('WW')
+  if (monthName !== lastMonthName) {
+    label = monthName
+  }
+
+  lastMonthName = monthName
+  const week = []
+  week.push(label)
+  for (let i = 0; i < 7; i++) {
+    week.push(current.format('DD'))
+    current.add(1, 'day')
+  }
+  weeks.push(week)
 }
 
 const defaultCellWidth = 25
-
+const doc = new jsPDF()
 doc.autoTable({
   styles: { fontSize: 3.75, halign: 'left', textColor: 'black' },
   headStyles: { halign: 'left', fontStyle: 'bold', fillColor: null },
@@ -68,7 +59,7 @@ doc.autoTable({
   body: weeks,
 })
 
-const outfile = 'calendar.pdf'
+const outfile = `calendar-${year}.pdf`
 if (fs.existsSync(outfile)) {
   fs.unlinkSync(outfile)
 }
