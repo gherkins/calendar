@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import * as fs from 'fs'
 import moment from 'moment'
+import tinycolor from 'tinycolor2'
 
 const year = parseInt(process.argv[2])
 const firstDayOfYear = moment(`${year}-01-01`)
@@ -37,6 +38,8 @@ while (current <= lastDayOfYear) {
   weeks.push(week)
 }
 
+const color = process.argv[3] || '56E39F'
+
 const defaultCellWidth = 25
 const doc = new jsPDF()
 doc.autoTable({
@@ -51,8 +54,8 @@ doc.autoTable({
     3: { cellWidth: defaultCellWidth },
     4: { cellWidth: defaultCellWidth },
     5: { cellWidth: defaultCellWidth },
-    6: { fillColor: '#fcf7dd', cellWidth: defaultCellWidth },
-    7: { fillColor: '#f9f0ca', cellWidth: defaultCellWidth },
+    6: { fillColor: tinycolor(color).lighten(30).toString(), cellWidth: defaultCellWidth },
+    7: { fillColor: tinycolor(color).lighten(25).toString(), cellWidth: defaultCellWidth },
   },
   margin: { top: 10, bottom: 10 },
   head: [['', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA', 'SO']],

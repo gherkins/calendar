@@ -7,6 +7,7 @@
   "dependencies": {
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
-    "moment": "^2.30.1"
+    "moment": "^2.30.1",
+    "tinycolor2": "^1.6.0"
   }
 }
