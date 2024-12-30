@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.28"
+    "jspdf-autotable": "^3.5.28",
+    "moment": "^2.30.1"
   }
 }
